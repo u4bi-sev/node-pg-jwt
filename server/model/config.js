@@ -11,5 +11,8 @@ module.exports = {
             database : '',
         }),
         open : (con) => con.connect((error) => { throw error; })
+    },
+    jwt : {
+        secret: 'secretKEYu4bi-test-1234@#'
     }
  }

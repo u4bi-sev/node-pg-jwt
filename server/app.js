@@ -1,6 +1,7 @@
 const config  = require('./model/config'),
       restify = require('restify'),
-      corsMiddleware = require('restify-cors-middleware');
+      corsMiddleware = require('restify-cors-middleware'),
+      jwt = require('jsonwebtoken');
 
 /* cross origin http */
 const cors = corsMiddleware( { origins: ['http://127.0.0.1:5500'] } );
@@ -32,7 +33,21 @@ server.post('/user', (req, res) => {
         db.one('SELECT * FROM _token WHERE name = $1 AND password = $2', [ req.body.name, req.body.password ])
             .then((results) => {
 
-                res.end(JSON.stringify(results)); /* { "id" : 1, "name" : "u4bi", "password" : "u4bi-password", "pay" : 1256.233, "age" : 17 } */
+                console.log(JSON.stringify(results)); /* { "id" : 1, "name" : "u4bi", "password" : "u4bi-password", "pay" : 1256.233, "age" : 17 } */
+                
+                delete results.id;
+                delete results.password;
+
+                jwt.sign(
+                    { ...results }, // payload
+                    config.jwt.secret,
+                    {
+                        algorithm: 'HS256',
+                        expiresIn : 60
+                        // notBefore : 30
+                    },
+                    (err, token) => res.send({ token : token })
+                );
 
             })
             .catch((error) => res.end());
