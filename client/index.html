@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>restify postgreSQL jwt client</title>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>        
+    </head>
+    <body>
+
+        <label>name : <input value="u4bi"></label>
+        <label>password : <input value="u4bi-password"></label>
+            <button onclick="sign()">토큰 발급</button>
+
+        <p></p>
+
+        <label>verify : <input></label>
+            <button onclick="verify()" >토큰 인증</button>
+
+
+        <script>
+
+            let url = 'http://localhost:7778',
+                [ name, password, token ] = document.querySelectorAll('input'),
+                log = (e) => [console.log(e), alert( JSON.stringify(e.data))];
+
+
+            function sign( data = { name : name.value, password  : password.value }) {
+                axios({
+                    method : 'POST',
+                    url : url + '/user',
+                    data: data
+                }).then(e => [ log(e), document.querySelector('p').innerText = e.data.token || '']);
+            }
+
+
+            function verify(data = token.value) {
+                axios({
+                    method : 'GET',
+                    url : `${ url }/token/${ data }`
+                }).then(e => log(e));
+            }
+
+        </script>
+    </body>
+</html>
