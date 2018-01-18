@@ -58,8 +58,18 @@ server.post('/user', (req, res) => {
 });
 
 
-server.post('/token', (req, res) => {
+server.get('/token/:key', (req, res) => {
+    try {
 
+        jwt.verify(
+            req.params.key,
+            config.jwt.secret, // secret key
+            (err, decoded) => !err ? res.send({ payload : decoded }) : res.end() /* { "payload" : { "name" : "u4bi", "pay" : 1256.233, "age" : 17, "iat" : 1516260115, "exp" : 1516260175} } */
+        );
+
+    } catch(e) {
+        res.end();
+    }
 });
 
 server.listen(7778, () => console.log(server.name, server.url));
